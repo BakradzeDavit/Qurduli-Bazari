@@ -53,7 +53,7 @@ export default function App() {
               <Route path="/" element={<HomePage user={user} users={users} />} />
               <Route
                 path="/Profile"
-                element={<ProfilePage handleLogout={handleLogout} user={user}/>}
+                element={<ProfilePage handleLogout={handleLogout} user={user} setUser={setUser} />}
               />
               <Route path="/Posts" element={<PostsPage />} />
               <Route path="/Friends" element={<FriendsPage />} />

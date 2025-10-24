@@ -62,6 +62,17 @@ ipcMain.handle("get-all-users", async () => {
   }
 });
 
+ipcMain.handle("update-username", async (event, { uid, newUsername }) => {
+  try {
+    await admin.auth().updateUser(uid, { displayName: newUsername });
+    const updatedUser = await admin.auth().getUser(uid);
+    return updatedUser.toJSON();
+  } catch (error) {
+    console.error("Failed to update username:", error);
+    return null;
+  }
+});
+
 app.whenReady().then(() => {
   createWindow();
 
