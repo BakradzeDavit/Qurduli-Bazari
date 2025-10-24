@@ -12,7 +12,7 @@ export default defineConfig({
   root: __dirname,
   base: './',
   build: {
-    outDir: path.join(__dirname, 'src/'),
+    outDir: path.join(__dirname, '.vite/build/renderer/main_window'),
     emptyOutDir: true,
     rollupOptions: {
       input: path.resolve(__dirname, 'index.html')
@@ -23,5 +23,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
-
+  server: {
+    port: 5173
+  }
 });

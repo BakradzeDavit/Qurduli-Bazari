@@ -8,7 +8,7 @@ function ProfilePage({ handleLogout, user, setUser }) {
     setChangeUsername(true);
     
     if (username && changeusername) {
-      const updatedUser = await window.backend.updateUsername(user.uid, username);
+      const updatedUser = await window.electronAPI.updateUsername(user.uid, username);
       if (updatedUser) {
         setUser(updatedUser);
       } else {
@@ -66,7 +66,7 @@ function ProfilePage({ handleLogout, user, setUser }) {
                 onClick={handleEditUsername}
                 className="p-3 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               >
-                <i className={changeusername ? "bi bi-check-lg text-xl" : "bi bi-pencil text-xl"}></i>
+                <i className={changeusername ? `bi bi-check-lg text-xl` : `bi bi-pencil text-xl`}></i>
               </button>
             </div>
           </div>

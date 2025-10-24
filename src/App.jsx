@@ -27,7 +27,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    window.backend.getAllUsers().then((data) => {
+    window.electronAPI.getAllUsers().then((data) => {
       console.log("Users:", data);
       setUsers(data);
     });
@@ -50,10 +50,15 @@ export default function App() {
           <div>
             <Header /> {/* ✅ Always visible when logged in */}
             <Routes>
-              <Route path="/" element={<HomePage user={user} users={users} />} />
+              <Route
+                path="/"
+                element={<HomePage user={user} users={users} />}
+              />
               <Route
                 path="/Profile"
-                element={<ProfilePage handleLogout={handleLogout} user={user} setUser={setUser} />}
+                element={
+                  <ProfilePage handleLogout={handleLogout} user={user} setUser={setUser}/>
+                }
               />
               <Route path="/Posts" element={<PostsPage />} />
               <Route path="/Friends" element={<FriendsPage />} />
