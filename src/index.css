@@ -1,0 +1,88 @@
+@import "tailwindcss";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.RegistrationPage{
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.login, .signup {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 400px;
+}
+
+.login h2, .signup h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.input {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.loginBtn,
+.signupBtn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.loginBtn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.signupBtn {
+  margin-top: 10px;
+  color: #333;
+}
+
+.loginBtn:hover {
+  background-color: #45a049;
+}
+.signupBtn:hover {
+  text-decoration: underline;
+}
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+.nav-link:hover {
+  color: #38bdf8; /* light blue accent */
+  transform: scale(1.05);
+  text-shadow: #fff 0px 0px 5px;
+}
+
+/* Optional: active link */
+.nav-link:active {
+  color: #0ea5e9;
+}
