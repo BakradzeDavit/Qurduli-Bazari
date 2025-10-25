@@ -9,10 +9,9 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  root: __dirname,
   base: './',
   build: {
-    outDir: path.join(__dirname, '.vite/build/renderer/main_window'),
+    outDir: '.vite/renderer/main_window',  // Simplified path
     emptyOutDir: true,
     rollupOptions: {
       input: path.resolve(__dirname, 'index.html')

@@ -1,42 +1,39 @@
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
+import fs from 'fs-extra';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function copyPreload() {
-  const src = path.join(__dirname, "src/preload.cjs");
-  const dest = path.join(__dirname, "out/preload.cjs");
-  fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.copyFileSync(src, dest);
-  console.log("✓ Copied preload.cjs");
-}
-
 export default {
   packagerConfig: {
-    asar: true,
+    asar: false,
     name: "Qurduli Bazari",
     executableName: "qurduli-bazari",
-    extraResources: [
-      {
-        from: "ServiceAccountKey.json",
-        to: "./ServiceAccountKey.json", // Fixed path
-      },
-      {
-        from: "out/preload.cjs", // Use the copied file
-        to: "./preload.cjs", // Fixed path
-      },
+    extraResource: [
+      "ServiceAccountKey.json",
+      "src/preload.cjs"
     ],
   },
   makers: [
     {
       name: "@electron-forge/maker-squirrel",
-      config: { name: "qurduli_bazari" },
+      config: { 
+        name: "qurduli_bazari" 
+      },
     },
-    { name: "@electron-forge/maker-zip", platforms: ["darwin"] },
-    { name: "@electron-forge/maker-deb", config: {} },
-    { name: "@electron-forge/maker-rpm", config: {} },
+    { 
+      name: "@electron-forge/maker-zip", 
+      platforms: ["darwin"] 
+    },
+    { 
+      name: "@electron-forge/maker-deb", 
+      config: {} 
+    },
+    { 
+      name: "@electron-forge/maker-rpm", 
+      config: {} 
+    },
   ],
   plugins: [
     {
@@ -58,6 +55,14 @@ export default {
     },
   ],
   hooks: {
-    prePackage: copyPreload,
-  },
+    postPackage: async (forgeConfig, options) => {
+      console.log('Copying node_modules...');
+      const appPath = path.join(options.outputPaths[0], 'resources', 'app');
+      const nodeModulesSource = path.join(__dirname, 'node_modules');
+      const nodeModulesDest = path.join(appPath, 'node_modules');
+      
+      await fs.copy(nodeModulesSource, nodeModulesDest);
+      console.log('✓ node_modules copied successfully');
+    }
+  }
 };

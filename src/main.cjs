@@ -1,16 +1,16 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
 const path = require("node:path");
 const fs = require("fs");
 const admin = require("firebase-admin");
 
 // ------------------- Debug Info -------------------
-console.log('=== DEBUG INFO ===');
-console.log('App path:', app.getAppPath());
-console.log('Resources path:', process.resourcesPath);
-console.log('CWD:', process.cwd());
-console.log('__dirname:', __dirname);
-console.log('App isPackaged:', app.isPackaged);
-console.log('==================');
+console.log("=== DEBUG INFO ===");
+console.log("App path:", app.getAppPath());
+console.log("Resources path:", process.resourcesPath);
+console.log("CWD:", process.cwd());
+console.log("__dirname:", __dirname);
+console.log("App isPackaged:", app.isPackaged);
+console.log("==================");
 
 // ------------------- Error Handlers -------------------
 process.on("uncaughtException", (error) => {
@@ -23,14 +23,9 @@ process.on("unhandledRejection", (error) => {
 // ------------------- Firebase Admin Setup -------------------
 const getServiceAccountPath = () => {
   if (app.isPackaged) {
-    const resourcePath = path.join(process.resourcesPath, "ServiceAccountKey.json");
-    console.log("Production ServiceAccount path:", resourcePath);
-    return resourcePath;
+    return path.join(process.resourcesPath, "ServiceAccountKey.json");
   }
-  // Development: from project root
-  const devPath = path.join(__dirname, "../../ServiceAccountKey.json");
-  console.log("Development ServiceAccount path:", devPath);
-  return devPath;
+  return path.join(__dirname, "../../ServiceAccountKey.json");
 };
 
 let firebaseInitialized = false;
@@ -42,7 +37,6 @@ try {
 
   if (!fs.existsSync(serviceAccountPath)) {
     console.error("ServiceAccountKey.json not found at:", serviceAccountPath);
-    // List files in directory for debugging
     try {
       const dir = path.dirname(serviceAccountPath);
       console.log("Files in directory:", fs.readdirSync(dir));
@@ -86,6 +80,7 @@ const createWindow = () => {
       },
     });
 
+
     mainWindow.on("closed", () => {
       console.log("Main window closed");
     });
@@ -94,6 +89,13 @@ const createWindow = () => {
       "did-fail-load",
       (event, errorCode, errorDescription) => {
         console.error("Failed to load:", errorCode, errorDescription);
+        // Show error page
+        mainWindow.loadURL(
+          "data:text/html,<h1>Failed to load app</h1><p>Error: " +
+            errorDescription +
+            "</p><p>Check console for details</p>"
+        );
+        mainWindow.webContents.openDevTools();
       }
     );
 
@@ -107,26 +109,62 @@ const createWindow = () => {
         })
         .catch((err) => console.error("Error loading dev URL:", err));
     } else {
-      const indexHtmlPath = path.join(
-        __dirname,
-        "../renderer/main_window/index.html"
-      );
-      console.log("Loading production HTML from:", indexHtmlPath);
-      console.log("HTML exists:", fs.existsSync(indexHtmlPath));
-      
-      if (!fs.existsSync(indexHtmlPath)) {
-        console.error("HTML file not found! Available files in build dir:");
-        const buildDir = path.join(__dirname, "../renderer");
-        try {
-          console.log(fs.readdirSync(buildDir, { recursive: true }));
-        } catch (e) {
-          console.error("Cannot read build directory:", e);
+      // Try multiple possible paths for the HTML file
+      const possiblePaths = [
+        path.join(__dirname, "../renderer/main_window/index.html"), // This should work now
+        path.join(app.getAppPath(), ".vite/renderer/main_window/index.html"),
+      ];
+
+      console.log("Searching for index.html...");
+      let indexHtmlPath = null;
+      for (const testPath of possiblePaths) {
+        console.log("Testing path:", testPath);
+        console.log("Exists:", fs.existsSync(testPath));
+        if (fs.existsSync(testPath)) {
+          indexHtmlPath = testPath;
+          console.log("✓ Found HTML at:", indexHtmlPath);
+          break;
         }
       }
-      
+
+      if (!indexHtmlPath) {
+        console.error("❌ HTML file not found!");
+        console.error("Checked paths:", possiblePaths);
+
+        // Show what files actually exist
+        try {
+          const appPath = app.getAppPath();
+          console.log("\n=== Files in app directory ===");
+          console.log("App path:", appPath);
+          const files = fs.readdirSync(appPath, { recursive: true });
+          files.forEach((file) => console.log("  -", file));
+        } catch (e) {
+          console.error("Cannot read app directory:", e);
+        }
+
+        // Load error page
+        mainWindow.loadURL(
+          "data:text/html,<h1>App files not found</h1><p>Check console logs (F12)</p>"
+        );
+        mainWindow.webContents.openDevTools();
+        return;
+      }
+
+      console.log("Loading production HTML from:", indexHtmlPath);
       mainWindow
         .loadFile(indexHtmlPath)
-        .catch((err) => console.error("Error loading production HTML:", err));
+        .then(() => console.log("✓ HTML loaded successfully"))
+        .catch((err) => {
+          console.error("Error loading production HTML:", err);
+          mainWindow.loadURL(
+            "data:text/html,<h1>Failed to load</h1><p>" + err.message + "</p>"
+          );
+          
+        });
+    }
+  // Always open dev tools in packaged mode for debugging
+    if (app.isPackaged) {
+    
     }
   } catch (error) {
     console.error("Error creating window:", error);

@@ -1,13 +1,15 @@
 @import "tailwindcss";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-.RegistrationPage{
+.RegistrationPage {
   margin: 0;
   font-family: Arial, sans-serif;
   background-color: #f2f2f2;
@@ -16,7 +18,8 @@ html, body, #root {
   align-items: center;
   height: 100vh;
 }
-.login, .signup {
+.login,
+.signup {
   background-color: #fff;
   padding: 30px 40px;
   border-radius: 10px;
@@ -25,7 +28,8 @@ html, body, #root {
   width: 400px;
 }
 
-.login h2, .signup h2 {
+.login h2,
+.signup h2 {
   margin-bottom: 20px;
   color: #333;
 }
@@ -72,7 +76,9 @@ html, body, #root {
   text-decoration: none;
   font-weight: 500;
   font-size: 1.1rem;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 /* Hover effect */
@@ -85,4 +91,16 @@ html, body, #root {
 /* Optional: active link */
 .nav-link:active {
   color: #0ea5e9;
+}
+.rename-username i {
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.rename-username:hover i {
+  transform: scale(1.2);
+  visibility: visible;
+}
+.rename-username i:hover {
+  color: #10b981;
 }

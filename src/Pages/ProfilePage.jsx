@@ -8,7 +8,7 @@ function ProfilePage({ handleLogout, user, setUser }) {
     setChangeUsername(true);
     
     if (username && changeusername) {
-      const updatedUser = await window.electronAPI.updateUsername(user.uid, username);
+      const updatedUser = await window.backend.updateUsername(user.uid, username);
       if (updatedUser) {
         setUser(updatedUser);
       } else {
@@ -50,7 +50,7 @@ function ProfilePage({ handleLogout, user, setUser }) {
             <label className="block text-sm font-medium text-gray-500 mb-3">
               Username
             </label>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 rename-username">
               {changeusername ? (
                 <input
                   type="text"

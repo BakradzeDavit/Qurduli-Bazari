@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";  // Changed to HashRouter
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import Login from "./components/Login.jsx";
 import SignUp from "./components/SignUp.jsx";
@@ -27,11 +27,11 @@ export default function App() {
   };
 
   useEffect(() => {
-    window.electronAPI.getAllUsers().then((data) => {
+    window.backend.getAllUsers().then((data) => {  // Changed from electronAPI to backend
       console.log("Users:", data);
       setUsers(data);
     });
-  }, [auth]);
+  }, []);  // Removed auth dependency
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -48,7 +48,7 @@ export default function App() {
       <div>
         {user ? (
           <div>
-            <Header /> {/* ✅ Always visible when logged in */}
+            <Header />
             <Routes>
               <Route
                 path="/"
